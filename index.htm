@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>딱 맞는 게임 추천기</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Font Awesome CSS -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        header {
+            background-color: #35424a;
+            color: #ffffff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .genre-button {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #eef;
+            text-align: center;
+        }
+        .game {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .game img {
+            width: 150px;
+            height: 100px;
+            border-radius: 5px;
+            margin-right: 20px;
+        }
+        .video {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            display: block;
+            max-width: 100%;
+        }
+        .rating {
+            color: gold; /* 별 색상 */
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #777;
+        }
+    </style>
+    <script>
+        const singleGames = [
+            {
+                title: "Celeste",
+                description: "플랫폼 게임으로, 어려운 도전과 감동적인 스토리를 제공합니다.",
+                price: "₩19,800",
+                ageRating: "전체이용가",
+                link: "https://store.steampowered.com/app/504230/Celeste/",
+                video: "https://www.youtube.com/embed/2Wos-4uE19A",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/504230/header.jpg",
+                rating: 5 // 가상의 평점
+            },
+            {
+                title: "Stardew Valley",
+                description: "작물 재배와 농장 경영을 즐길 수 있는 오픈 월드 RPG 게임입니다.",
+                price: "₩19,800",
+                ageRating: "12세 이용가",
+                link: "https://store.steampowered.com/app/413150/Stardew_Valley/",
+                video: "https://www.youtube.com/embed/4cK2m8m7g74",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/292030/header.jpg",
+                rating: 5
+            },
+            {
+                title: "Terraria",
+                description: "오픈 월드에서 탐험하고 건축할 수 있는 액션 어드벤처 게임입니다.",
+                price: "₩11,000",
+                ageRating: "12세 이용가",
+                link: "https://store.steampowered.com/app/105600/Terraria/",
+                video: "https://www.youtube.com/embed/DS2U5D_q8Ks",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/205930/header.jpg",
+                rating: 4
+            },
+            {
+                title: "Portal 2",
+                description: "퍼즐 기반의 액션 게임으로, 독특한 스토리가 특징입니다.",
+                price: "₩24,000",
+                ageRating: "12세 이용가",
+                link: "https://store.steampowered.com/app/620/Portal_2/",
+                video: "https://www.youtube.com/embed/hY2bD0VvM_o",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/620/header.jpg",
+                rating: 5
+            },
+            {
+                title: "Undertale",
+                description: "독특한 스토리와 캐릭터를 가진 RPG 게임입니다.",
+                price: "₩10,000",
+                ageRating: "12세 이용가",
+                link: "https://store.steampowered.com/app/391540/Undertale/",
+                video: "https://www.youtube.com/embed/vzW_HM18qS0",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/391540/header.jpg",
+                rating: 5
+            },
+            {
+                title: "Hollow Knight",
+                description: "탐험과 전투가 어우러진 메트로이드바니아 스타일의 게임입니다.",
+                price: "₩18,000",
+                ageRating: "전체이용가",
+                link: "https://store.steampowered.com/app/367520/Hollow_Knight/",
+                video: "https://www.youtube.com/embed/38pxOeJUSX8",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/367520/header.jpg",
+                rating: 5
+            }
+        ];
+
+        const multiplayerGames = [
+            {
+                title: "Destiny 2",
+                description: "다양한 전투와 퀘스트를 통해 친구들과 협력할 수 있는 게임입니다.",
+                price: "무료",
+                ageRating: "12세 이용가",
+                link: "https://store.steampowered.com/app/1085660/Destiny_2/",
+                video: "https://www.youtube.com/embed/1p4YZ6yqOnQ",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/578600/header.jpg",
+                rating: 4
+            },
+            {
+                title: "Apex Legends",
+                description: "팀 기반의 배틀 로얄 게임으로, 빠른 속도의 전투가 특징입니다.",
+                price: "무료",
+                ageRating: "12세 이용가",
+                link: "https://store.steampowered.com/app/1172470/Apex_Legends/",
+                video: "https://www.youtube.com/embed/x-5BtkA1B2s",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/1172470/header.jpg",
+                rating: 5
+            },
+            {
+                title: "Fortnite",
+                description: "건설과 생존을 결합한 배틀 로얄 게임입니다.",
+                price: "무료",
+                ageRating: "12세 이용가",
+                link: "https://www.epicgames.com/fortnite/en-US/home",
+                video: "https://www.youtube.com/embed/0swn_r5okxA",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/246181/header.jpg",
+                rating: 4
+            },
+            {
+                title: "Team Fortress 2",
+                description: "팀 기반의 슈팅 게임으로, 다양한 클래스와 맵을 제공합니다.",
+                price: "무료",
+                ageRating: "15세 이용가",
+                link: "https://store.steampowered.com/app/440/Team_Fortress_2/",
+                video: "https://www.youtube.com/embed/g1e6a6s1Uu8",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/440/header.jpg",
+                rating: 4
+            },
+            {
+                title: "Warframe",
+                description: "우주에서의 전투를 경험할 수 있는 액션 게임입니다.",
+                price: "무료",
+                ageRating: "15세 이용가",
+                link: "https://store.steampowered.com/app/230410/Warframe/",
+                video: "https://www.youtube.com/embed/ZD2cTlgASzg",
+                image: "https://cdn.akamai.steamstatic.com/steam/apps/230410/header.jpg",
+                rating: 4
+            }
+        ];
+
+        function getStars(rating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= rating) {
+                    stars += '<i class="fas fa-star rating"></i>';
+                } else {
+                    stars += '<i class="far fa-star rating"></i>';
+                }
+            }
+            return stars;
+        }
+
+        function showSingleGames() {
+            const gameContainer = document.getElementById('gameContainer');
+            gameContainer.innerHTML = ''; // Clear previous games
+
+            singleGames.slice(0, 5).forEach(game => {
+                gameContainer.innerHTML += `
+                    <div class="game">
+                        <img src="${game.image}" alt="${game.title}">
+                        <h2>${game.title}</h2>
+                        <p>${game.description}</p>
+                        <p><strong>가격:</strong> ${game.price}</p>
+                        <p><strong>연령 등급:</strong> ${game.ageRating}</p>
+                        <p><strong>평점:</strong> ${getStars(game.rating)}</p>
+                        <iframe class="video" src="${game.video}" frameborder="0" allowfullscreen></iframe>
+                        <p><a href="${game.link}" target="_blank">게임 보기</a></p>
+                    </div>
+                `;
+            });
+        }
+
+        function showMultiplayerGames() {
+            const gameContainer = document.getElementById('gameContainer');
+            gameContainer.innerHTML = ''; // Clear previous games
+
+            multiplayerGames.slice(0, 5).forEach(game => {
+                gameContainer.innerHTML += `
+                    <div class="game">
+                        <img src="${game.image}" alt="${game.title}">
+                        <h2>${game.title}</h2>
+                        <p>${game.description}</p>
+                        <p><strong>가격:</strong> ${game.price}</p>
+                        <p><strong>연령 등급:</strong> ${game.ageRating}</p>
+                        <p><strong>평점:</strong> ${getStars(game.rating)}</p>
+                        <iframe class="video" src="${game.video}" frameborder="0" allowfullscreen></iframe>
+                        <p><a href="${game.link}" target="_blank">게임 보기</a></p>
+                    </div>
+                `;
+            });
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>딱 맞는 게임 추천기</h1>
+    </header>
+    <div class="container">
+        <div class="genre-button" onclick="showSingleGames()">싱글 플레이 게임 추천</div>
+        <div class="genre-button" onclick="showMultiplayerGames()">멀티 플레이 게임 추천</div>
+        <div id="gameContainer"></div>
+    </div>
+    <footer>
+        <p>&copy; 2024 게임 추천기</p>
+    </footer>
+</body>
+</html>
